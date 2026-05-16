@@ -807,6 +807,10 @@
     }
     currentStep = step;
     document.getElementById('sec' + step).classList.add('active');
+    if (step === 4) {
+      // Ensure canvas has a real size once the signature section is visible.
+      requestAnimationFrame(resizeCanvas);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -853,15 +857,16 @@
       sigCanvas.addEventListener('pointerup', stopDraw);
       sigCanvas.addEventListener('pointerleave', stopDraw);
       sigCanvas.addEventListener('pointercancel', stopDraw);
-    } else {
-      sigCanvas.addEventListener('mousedown', startDraw);
-      sigCanvas.addEventListener('mousemove', draw);
-      sigCanvas.addEventListener('mouseup', stopDraw);
-      sigCanvas.addEventListener('mouseleave', stopDraw);
-      sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
-      sigCanvas.addEventListener('touchmove', draw, { passive: false });
-      sigCanvas.addEventListener('touchend', stopDraw);
     }
+
+    // Always register mouse/touch as a fallback for mobile browsers.
+    sigCanvas.addEventListener('mousedown', startDraw);
+    sigCanvas.addEventListener('mousemove', draw);
+    sigCanvas.addEventListener('mouseup', stopDraw);
+    sigCanvas.addEventListener('mouseleave', stopDraw);
+    sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    sigCanvas.addEventListener('touchmove', draw, { passive: false });
+    sigCanvas.addEventListener('touchend', stopDraw);
   }
 
   function resizeCanvas() {
