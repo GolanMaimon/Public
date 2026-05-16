@@ -568,7 +568,8 @@
     <div class="detail-badge">📅 10/6/2026</div>
     <div class="detail-badge">🕓 16:00–19:00</div>
     <div class="detail-badge">📍 בריכת כפר מעש</div>
-    <div class="detail-badge">🆕 עודכן: <span id="lastUpdated">16.05.2026 15:26</span></div>
+    <div class="detail-badge">🆕 עודכן: <span id="lastUpdated">16.05.2026 15:29</span></div>
+    <div class="detail-badge">🏷️ גרסה: <span id="versionLabel">v2026.05.16-1529</span></div>
   </div>
 </div>
 
@@ -781,7 +782,8 @@
   let sigCanvas, sigCtx, drawing = false, hasSig = false;
   let lastX = 0, lastY = 0;
   const EVENT_DATE = "10/6/2026";
-  const LAST_UPDATED = "16.05.2026 15:26";
+  const LAST_UPDATED = "16.05.2026 15:29";
+  const VERSION = "v2026.05.16-1529";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBp0moayUbG4QSIxZ-5AHnHjhzQEPKJhq011cEMcv9ELMugKtU6qQrXnsXMTmGnU54/exec";
 
   // --- Init ---
@@ -789,6 +791,7 @@
     initSignature();
     setSignDate();
     setLastUpdated();
+    setVersion();
   });
 
   function setSignDate() {
@@ -800,6 +803,11 @@
   function setLastUpdated() {
     const el = document.getElementById('lastUpdated');
     if (el) el.textContent = LAST_UPDATED;
+  }
+
+  function setVersion() {
+    const el = document.getElementById('versionLabel');
+    if (el) el.textContent = VERSION;
   }
 
   // --- Navigation ---
