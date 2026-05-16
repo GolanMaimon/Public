@@ -270,39 +270,31 @@
   }
   .field input.error { border-color: var(--danger); background: #fff5f5; }
 
-  /* Declarations checkboxes */
+  /* Declarations */
   .declarations { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
   .decl-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
     background: var(--light);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 14px 16px;
-    cursor: pointer;
     transition: all 0.2s;
   }
   .decl-item:hover { border-color: var(--sky); background: var(--water); }
-  .decl-item.checked { border-color: var(--success); background: #f0fff4; }
-  .decl-check {
-    width: 22px; height: 22px;
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-    transition: all 0.2s;
-    background: white;
-    font-size: 14px;
-  }
-  .decl-item.checked .decl-check {
-    background: var(--success);
-    border-color: var(--success);
-    color: white;
-  }
-  .decl-text { font-size: 14px; line-height: 1.7; color: var(--navy); }
+  .decl-text { font-size: 14px; line-height: 1.7; color: var(--navy); margin-bottom: 10px; }
   .decl-text strong { color: var(--blue); }
+  .decl-choices { display: flex; gap: 12px; flex-wrap: wrap; }
+  .decl-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .decl-choice input { accent-color: var(--sky); }
 
   /* Signature pad */
   .sig-wrap {
@@ -633,30 +625,45 @@
   <!-- STEP 2: Declarations -->
   <div class="section" id="sec2">
     <div class="section-title"><span>✅</span> הצהרות ואישורים</div>
-    <div class="section-desc">יש לאשר את כל ההצהרות הבאות. כולן חובה.</div>
+    <div class="section-desc">יש לסמן כן/לא לכל הצהרה.</div>
     <div class="declarations" id="declList">
-      <div class="decl-item" onclick="toggleDecl(this)" data-id="d1">
-        <div class="decl-check">✓</div>
+      <div class="decl-item" data-id="d1">
         <div class="decl-text">אני מאשר/ת כי ילדי/בתי <strong>יודע/ת לשחות</strong> בצורה טובה ומורשה/ית להיכנס למים. (ילד שאינו יודע לשחות ישהה במים הרדודים בלבד ו/או עם מצוף)</div>
+        <div class="decl-choices">
+          <label class="decl-choice"><input type="radio" name="d1" value="yes"> כן</label>
+          <label class="decl-choice"><input type="radio" name="d1" value="no"> לא</label>
+        </div>
       </div>
-      <div class="decl-item" onclick="toggleDecl(this)" data-id="d2">
-        <div class="decl-check">✓</div>
+      <div class="decl-item" data-id="d2">
         <div class="decl-text">אני מצהיר/ה כי ילדי/בתי <strong>כשיר/ה מבחינה רפואית, גופנית ונפשית</strong> להשתתף בפעילות במים, ואין מניעה רפואית כלשהי.</div>
+        <div class="decl-choices">
+          <label class="decl-choice"><input type="radio" name="d2" value="yes"> כן</label>
+          <label class="decl-choice"><input type="radio" name="d2" value="no"> לא</label>
+        </div>
       </div>
-      <div class="decl-item" onclick="toggleDecl(this)" data-id="d3">
-        <div class="decl-check">✓</div>
+      <div class="decl-item" data-id="d3">
         <div class="decl-text">אני מתחייב/ת <strong>להגיע פיזית</strong> לאירוע ולהשגיח על ילדי/בתי לאורך כל שעות הפעילות.</div>
+        <div class="decl-choices">
+          <label class="decl-choice"><input type="radio" name="d3" value="yes"> כן</label>
+          <label class="decl-choice"><input type="radio" name="d3" value="no"> לא</label>
+        </div>
       </div>
-      <div class="decl-item" onclick="toggleDecl(this)" data-id="d4">
-        <div class="decl-check">✓</div>
+      <div class="decl-item" data-id="d4">
         <div class="decl-text">אני מאשר/ת כי <strong>בדקתי</strong> את מתחם האירוע ומצאתיו תקין ובטוח לפעילות.</div>
+        <div class="decl-choices">
+          <label class="decl-choice"><input type="radio" name="d4" value="yes"> כן</label>
+          <label class="decl-choice"><input type="radio" name="d4" value="no"> לא</label>
+        </div>
       </div>
-      <div class="decl-item" onclick="toggleDecl(this)" data-id="d5">
-        <div class="decl-check">✓</div>
+      <div class="decl-item" data-id="d5">
         <div class="decl-text">קראתי את כל הסעיפים, הבנתי את <strong>משמעותם המשפטית</strong>, ואני מסכים/ה לויתור על תביעות כנגד הוועד.</div>
+        <div class="decl-choices">
+          <label class="decl-choice"><input type="radio" name="d5" value="yes"> כן</label>
+          <label class="decl-choice"><input type="radio" name="d5" value="no"> לא</label>
+        </div>
       </div>
     </div>
-    <div class="error-msg" id="declError">⚠️ יש לאשר את כל ההצהרות לפני המשך</div>
+    <div class="error-msg" id="declError">⚠️ יש לסמן כן/לא לכל הצהרה לפני המשך</div>
     <button class="btn-next" onclick="validateDecls()">המשך ←</button>
     <button class="btn-back" onclick="goTo(1)">← חזור</button>
   </div>
@@ -803,15 +810,10 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- Declarations ---
-  function toggleDecl(el) {
-    el.classList.toggle('checked');
-  }
-
   function validateDecls() {
-    const items = document.querySelectorAll('#declList .decl-item');
-    const allChecked = [...items].every(i => i.classList.contains('checked'));
-    if (!allChecked) {
+    const groups = ['d1','d2','d3','d4','d5'];
+    const allAnswered = groups.every(name => document.querySelector('input[name="' + name + '"]:checked'));
+    if (!allAnswered) {
       document.getElementById('declError').classList.add('show');
       return;
     }
