@@ -772,7 +772,7 @@
   let currentStep = 1;
   let sigCanvas, sigCtx, drawing = false, hasSig = false;
   let lastX = 0, lastY = 0;
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTxAJHkoST7ri85T7LmY22IM4WWbdsC2sx2QIcVpiXrwr11nRAbiktlk_ggl4THMwz/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBp0moayUbG4QSIxZ-5AHnHjhzQEPKJhq011cEMcv9ELMugKtU6qQrXnsXMTmGnU54/exec";
 
   // --- Init ---
   document.addEventListener('DOMContentLoaded', () => {
@@ -966,7 +966,7 @@
 
       const res = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
 
