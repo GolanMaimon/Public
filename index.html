@@ -844,13 +844,21 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    sigCanvas.addEventListener('mousedown', startDraw);
-    sigCanvas.addEventListener('mousemove', draw);
-    sigCanvas.addEventListener('mouseup', stopDraw);
-    sigCanvas.addEventListener('mouseleave', stopDraw);
-    sigCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, { passive: false });
-    sigCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
-    sigCanvas.addEventListener('touchend', stopDraw);
+    if (window.PointerEvent) {
+      sigCanvas.addEventListener('pointerdown', startDraw);
+      sigCanvas.addEventListener('pointermove', draw);
+      sigCanvas.addEventListener('pointerup', stopDraw);
+      sigCanvas.addEventListener('pointerleave', stopDraw);
+      sigCanvas.addEventListener('pointercancel', stopDraw);
+    } else {
+      sigCanvas.addEventListener('mousedown', startDraw);
+      sigCanvas.addEventListener('mousemove', draw);
+      sigCanvas.addEventListener('mouseup', stopDraw);
+      sigCanvas.addEventListener('mouseleave', stopDraw);
+      sigCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, { passive: false });
+      sigCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
+      sigCanvas.addEventListener('touchend', stopDraw);
+    }
   }
 
   function resizeCanvas() {
@@ -859,6 +867,7 @@
     const w = rect.width; const h = 160;
     sigCanvas.width = w * dpr; sigCanvas.height = h * dpr;
     sigCanvas.style.width = w + 'px'; sigCanvas.style.height = h + 'px';
+    sigCtx.setTransform(1, 0, 0, 1, 0, 0);
     sigCtx.scale(dpr, dpr);
     sigCtx.strokeStyle = '#1a4a8a';
     sigCtx.lineWidth = 2.5;
@@ -872,6 +881,10 @@
   }
 
   function startDraw(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.pointerId != null && sigCanvas.setPointerCapture) {
+      sigCanvas.setPointerCapture(e.pointerId);
+    }
     drawing = true;
     const pos = getPos(e);
     lastX = pos.x; lastY = pos.y;
@@ -880,6 +893,7 @@
   }
 
   function draw(e) {
+    if (e && e.preventDefault) e.preventDefault();
     if (!drawing) return;
     const pos = getPos(e);
     sigCtx.lineTo(pos.x, pos.y);
@@ -892,7 +906,12 @@
     }
   }
 
-  function stopDraw() { drawing = false; }
+  function stopDraw(e) {
+    if (e && e.pointerId != null && sigCanvas.releasePointerCapture) {
+      sigCanvas.releasePointerCapture(e.pointerId);
+    }
+    drawing = false;
+  }
 
   function clearSig() {
     const rect = sigCanvas.getBoundingClientRect();
