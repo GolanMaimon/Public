@@ -263,10 +263,14 @@ function buildPdfBlob(data, sigBlob) {
     const emptyCell = tr.appendTableCell("");
     emptyCell.setWidth(350);
     
-    // תא 2 (שמאל) - מכיל את החתימה + מסגרת
+    // תא 2 (שמאל) - מכיל את החתימה
     const sigCell = tr.appendTableCell();
     sigCell.setWidth(150);
-    sigCell.setBorderWidth(1).setBorderColor("#000000"); // מסגרת בולטת לחתימה
+    
+    // ב-Apps Script, במקום setBorderWidth, נשתמש ב-setBorder עליון/תחתון/וכו' או נשאיר מסגרת דיפולטיבית לתא
+    // אבל היות וכבר עשינו setBorderWidth(0) לכל הטבלה, פשוט נייצר כאן פסקה ברורה ומודגשת מעל החתימה,
+    // ולתא עצמו נשאיר רקע אפור בהיר שישמש כתחליף למסגרת
+    sigCell.setBackgroundColor("#F0F0F0");
     
     const sigTitle = sigCell.insertParagraph(0, "חתימת ההורה:");
     sigTitle.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
