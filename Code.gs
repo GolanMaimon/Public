@@ -260,9 +260,8 @@ function buildPdfBlob(data, sigBlob) {
     sigTitle.setBold(true);
     if (rtl) sigTitle.setTextDirection(rtl);
 
-    const sigP = body.appendParagraph("");
-    sigP.setAlignment(DocumentApp.HorizontalAlignment.LEFT);
-    const img = sigP.appendImage(sigBlob);
+    // ב-Google Docs אי אפשר להוסיף תמונה ישירות אלא רק דרך הפסקה בצורה הזו:
+    const img = body.appendImage(sigBlob);
     
     // כיווץ יחסי של התמונה כדי שתיכנס תמיד יפה בצד
     const maxWidth = 130;
