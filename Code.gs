@@ -186,12 +186,23 @@ function buildPdfBlob(data, sigBlob) {
 
   const doc = DocumentApp.create("temp_pdf");
   const body = doc.getBody();
+  
+  // הצרת שוליים כדי להכניס הכל לעמוד אחד מאורגן
+  body.setMarginTop(20).setMarginBottom(20).setMarginLeft(20).setMarginRight(20);
+  
+  // הגדרת פונט קטן יותר וצפיפות כדי לוודא שזה נכנס לדף אחד
+  const style = {};
+  style[DocumentApp.Attribute.FONT_SIZE] = 9;
+  style[DocumentApp.Attribute.LINE_SPACING] = 1.0;
+  body.setAttributes(style);
+
   const rtl = (DocumentApp.TextDirection && DocumentApp.TextDirection.RIGHT_TO_LEFT) || null;
   if (rtl) body.setTextDirection(rtl);
 
   const title = body.appendParagraph("טופס אישור השתתפות במסיבת סיום שכבת כיתות ב׳")
-      .setHeading(DocumentApp.ParagraphHeading.HEADING1);
-  applyRtl(title);
+      .setHeading(DocumentApp.ParagraphHeading.HEADING2);
+  title.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+  if (rtl) title.setTextDirection(rtl);
 
   const intro = body.appendParagraph(
     'הורים ותלמידים יקרים, לקראת מסיבת הסיום השנתית של שכבת כיתות ב׳ (כיתות ב׳1 ו-ב׳2) ' +
@@ -229,22 +240,47 @@ function buildPdfBlob(data, sigBlob) {
 
   const confirm = body.appendParagraph(
     "אני החתום/ה מטה, הורה ו/או אפוטרופוס חוקי של התלמיד/ה, מאשר/ת בזאת כי קראתי בעיון את כל הסעיפים..."
-  );
+  ).setBold(true);
   applyRtl(confirm);
 
-  applyRtl(body.appendParagraph(`• שם מלא של התלמיד/ה: ${data.childName || ""}`));
-  applyRtl(body.appendParagraph(`• כיתה: ${data.childClass || ""}`));
-  applyRtl(body.appendParagraph(`• תעודת זהות של התלמיד/ה: ${data.childId || ""}`));
-  applyRtl(body.appendParagraph(`• שם מלא של ההורה המלווה: ${data.parentName || ""}`));
-  applyRtl(body.appendParagraph(`• תעודת זהות של ההורה המלווה: ${data.parentId || ""}`));
-  applyRtl(body.appendParagraph(`• כתובת מגורים: ${data.address || ""}`));
-  applyRtl(body.appendParagraph(`• טלפון נייד של ההורה המלווה: ${data.phone || ""}`));
-  applyRtl(body.appendParagraph(`• טלפון נוסף לשעת חירום: ${data.phone2 || ""}`));
-  applyRtl(body.appendParagraph(`תאריך: ${data.signDate || ""}`));
+  // קיבוץ כל פרטי הטופס לפסקה אחת מרוכזת כדי לחסוך מקום
+  const infoText = 
+    `• תלמיד/ה: ${data.childName || ""} | כיתה: ${data.childClass || ""} | ת.ז תלמיד: ${data.childId || ""}\n` +
+    `• הורה מלווה: ${data.parentName || ""} | ת.ז הורה: ${data.parentId || ""}\n` +
+    `• טלפון: ${data.phone || ""} | חירום: ${data.phone2 || ""} | כתובת: ${data.address || ""}\n` +
+    `• תאריך החתימה: ${data.signDate || ""}`;
+  
+  const infoP = body.appendParagraph(infoText);
+  applyRtl(infoP);
 
+  // השמת החתימה במסגרת משמאל למטה
   if (sigBlob) {
-    applyRtl(body.appendParagraph("חתימת ההורה המלווה:"));
-    body.appendImage(sigBlob);
+    const table = body.appendTable();
+    table.setBorderWidth(0); // הסרת גבולות כלליים מהטבלה עצמה
+    const tr = table.appendTableRow();
+    
+    // תא 1 (ימין) - מרווח ריק
+    const emptyCell = tr.appendTableCell("");
+    emptyCell.setWidth(350);
+    
+    // תא 2 (שמאל) - מכיל את החתימה + מסגרת
+    const sigCell = tr.appendTableCell();
+    sigCell.setWidth(150);
+    sigCell.setBorderWidth(1).setBorderColor("#000000"); // מסגרת בולטת לחתימה
+    
+    const sigTitle = sigCell.insertParagraph(0, "חתימת ההורה:");
+    sigTitle.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    sigTitle.setBold(true);
+    if (rtl) sigTitle.setTextDirection(rtl);
+
+    const img = sigCell.appendImage(sigBlob);
+    
+    // כיווץ יחסי של התמונה לרוחב התא
+    const maxWidth = 130;
+    const width = img.getWidth() || maxWidth;
+    const height = img.getHeight() || 60;
+    img.setWidth(maxWidth);
+    img.setHeight(maxWidth * (height / width));
   }
 
   doc.saveAndClose();
