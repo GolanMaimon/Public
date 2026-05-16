@@ -772,6 +772,7 @@
   let currentStep = 1;
   let sigCanvas, sigCtx, drawing = false, hasSig = false;
   let lastX = 0, lastY = 0;
+  const EVENT_DATE = "10/6/2026";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBp0moayUbG4QSIxZ-5AHnHjhzQEPKJhq011cEMcv9ELMugKtU6qQrXnsXMTmGnU54/exec";
 
   // --- Init ---
@@ -982,6 +983,7 @@
         address: document.getElementById('f_address').value,
         phone: document.getElementById('f_phone').value,
         phone2: document.getElementById('f_phone2').value,
+        eventDate: EVENT_DATE,
         signDate: document.getElementById('signDate').textContent,
         signature: sigCanvas.toDataURL('image/png')
       };
