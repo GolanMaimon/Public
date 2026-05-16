@@ -650,13 +650,6 @@
           <label class="decl-choice"><input type="radio" name="d3" value="no"> לא</label>
         </div>
       </div>
-      <div class="decl-item" data-id="d4">
-        <div class="decl-text">אני מאשר/ת כי <strong>בדקתי</strong> את מתחם האירוע ומצאתיו תקין ובטוח לפעילות.</div>
-        <div class="decl-choices">
-          <label class="decl-choice"><input type="radio" name="d4" value="yes"> כן</label>
-          <label class="decl-choice"><input type="radio" name="d4" value="no"> לא</label>
-        </div>
-      </div>
       <div class="decl-item" data-id="d5">
         <div class="decl-text">קראתי את כל הסעיפים, הבנתי את <strong>משמעותם המשפטית</strong>, ואני מסכים/ה לויתור על תביעות כנגד הוועד.</div>
         <div class="decl-choices">
@@ -872,7 +865,7 @@
   }
 
   function validateDecls() {
-    const groups = ['d1','d2','d3','d4','d5'];
+    const groups = ['d1','d2','d3','d5'];
     const allAnswered = groups.every(name => document.querySelector('input[name="' + name + '"]:checked'));
     if (!allAnswered) {
       document.getElementById('declError').classList.add('show');
@@ -1053,7 +1046,7 @@
   }
 
   function collectDeclarations() {
-    const ids = ['d1', 'd2', 'd3', 'd4', 'd5'];
+    const ids = ['d1', 'd2', 'd3', 'd5'];
     return ids.map(id => ({
       id,
       label: getDeclLabel(id),
