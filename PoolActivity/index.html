@@ -1033,6 +1033,25 @@
     document.getElementById('submitError').classList.remove('show');
   }
 
+  function getDeclValue(name) {
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+
+  function getDeclLabel(name) {
+    const el = document.querySelector('.decl-item[data-id="' + name + '"] .decl-text');
+    return el ? el.textContent.trim() : name;
+  }
+
+  function collectDeclarations() {
+    const ids = ['d1', 'd2', 'd3', 'd4', 'd5'];
+    return ids.map(id => ({
+      id,
+      label: getDeclLabel(id),
+      value: getDeclValue(id)
+    }));
+  }
+
   async function submitForm() {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
@@ -1050,7 +1069,8 @@
         phone2: document.getElementById('f_phone2').value,
         eventDate: EVENT_DATE,
         signDate: document.getElementById('signDate').textContent,
-        signature: sigCanvas.toDataURL('image/png')
+        signature: sigCanvas.toDataURL('image/png'),
+        declarations: collectDeclarations()
       };
 
       const res = await fetch(APPS_SCRIPT_URL, {
