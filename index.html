@@ -851,6 +851,14 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => resizeCanvas());
+      ro.observe(sigCanvas.parentElement);
+    } else {
+      setTimeout(resizeCanvas, 100);
+      setTimeout(resizeCanvas, 400);
+    }
+
     if (window.PointerEvent) {
       sigCanvas.addEventListener('pointerdown', startDraw);
       sigCanvas.addEventListener('pointermove', draw);
@@ -873,6 +881,7 @@
     const rect = sigCanvas.parentElement.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     const w = rect.width; const h = 160;
+    if (!w) return;
     sigCanvas.width = w * dpr; sigCanvas.height = h * dpr;
     sigCanvas.style.width = w + 'px'; sigCanvas.style.height = h + 'px';
     sigCtx.setTransform(1, 0, 0, 1, 0, 0);
