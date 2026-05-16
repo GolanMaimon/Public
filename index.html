@@ -855,8 +855,8 @@
       sigCanvas.addEventListener('mousemove', draw);
       sigCanvas.addEventListener('mouseup', stopDraw);
       sigCanvas.addEventListener('mouseleave', stopDraw);
-      sigCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, { passive: false });
-      sigCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
+      sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
+      sigCanvas.addEventListener('touchmove', draw, { passive: false });
       sigCanvas.addEventListener('touchend', stopDraw);
     }
   }
@@ -877,7 +877,10 @@
 
   function getPos(e) {
     const rect = sigCanvas.getBoundingClientRect();
-    return { x: (e.clientX || e.pageX) - rect.left, y: (e.clientY || e.pageY) - rect.top };
+    let point = e;
+    if (e.touches && e.touches[0]) point = e.touches[0];
+    else if (e.changedTouches && e.changedTouches[0]) point = e.changedTouches[0];
+    return { x: (point.clientX || point.pageX) - rect.left, y: (point.clientY || point.pageY) - rect.top };
   }
 
   function startDraw(e) {
