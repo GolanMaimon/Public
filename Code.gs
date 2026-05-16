@@ -22,6 +22,7 @@ function doPost(e) {
     let sheet = ss.getSheetByName(SHEET_NAME);
     logMsg(runId, "sheet found: " + Boolean(sheet));
 
+    // יצירת גיליון וכותרות (תואמות בדיוק לתבנית שלך)
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
       sheet.appendRow([
@@ -55,9 +56,10 @@ function doPost(e) {
     const eventDate = (data.eventDate || "").trim();
     logMsg(runId, "childId=" + childId + ", eventDate=" + eventDate);
 
-    // בדיקת כפילות - התאמנו את זה כך שיחפש בעמודה ה-5 כי הוספנו את "כיתה" בעמודה 4
+    // בדיקת כפילות
     const lastRow = sheet.getLastRow();
     if (childId && eventDate && lastRow > 1) {
+      // עמודת ת.ז תלמיד היא עמודה מס' 5 (E)
       const ids = sheet.getRange(2, 5, lastRow - 1, 1).getValues();
       const dates = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
       for (let i = 0; i < ids.length; i++) {
@@ -101,32 +103,33 @@ function doPost(e) {
     const pdfLink = pdfFile.getUrl();
     logMsg(runId, "pdf saved: " + pdfLink);
 
-    // הוספת שורה לגיליון עם נתוני הכיתה
+    // הוספת שורה לגיליון - הסדר תוקן שיתאים בדיוק לעמודות
     sheet.appendRow([
-      now.toLocaleString("he-IL"),
-      eventDate,
-      data.childName  || "",
-      data.childClass || "",     
-      childId,
-      data.parentName || "",
-      data.parentId   || "",
-      data.address    || "",
-      data.phone      || "",
-      data.phone2     || "",
-      data.signDate   || "",
-      sigLink,
-      "",
-      pdfLink
+      now.toLocaleString("he-IL"),  // תאריך הגשה
+      eventDate,                    // תאריך האירוע
+      data.childName  || "",        // שם התלמיד/ה
+      data.childClass || "",        // כיתה  <-- נוספה כאן בדיוק לאחר שם התלמיד לפי העמודות
+      childId,                      // ת.ז. תלמיד/ה
+      data.parentName || "",        // שם ההורה המלווה
+      data.parentId   || "",        // ת.ז. הורה מלווה
+      data.address    || "",        // כתובת
+      data.phone      || "",        // טלפון נייד
+      data.phone2     || "",        // טלפון נוסף
+      data.signDate   || "",        // תאריך חתימה
+      sigLink,                      // קישור לחתימה
+      "",                           // תמונה
+      pdfLink                       // קישור ל-PDF
     ]);
 
     const newLast = sheet.getLastRow();
-    // העמודה של החתימה, בגלל הוספת כיתה, זזה מ-11 ל-12
-    sheet.getRange(newLast, 13) // עמודת התמונה זזה ל-13
-      .setFormula('=IF(L' + newLast + '<>"",IMAGE(L' + newLast + '),"")'); // L היא עמודה 12
+    
+    // חישוב הנוסחה לתמונה. מכיוון שהוספנו את 'כיתה', קישור חתימה נמצא בעמודה 12 (L), ועמודת התמונה היא 13 (M)
+    sheet.getRange(newLast, 13)
+      .setFormula('=IF(L' + newLast + '<>"",IMAGE(L' + newLast + '),"")');
     sheet.setRowHeight(newLast, 120);
 
     if (newLast % 2 === 0) {
-      sheet.getRange(newLast, 1, 1, 14).setBackground("#e8f4fd"); // עודכן ל-14 עמודות בסה"כ
+      sheet.getRange(newLast, 1, 1, 14).setBackground("#e8f4fd");
     }
 
     logMsg(runId, "doPost success row=" + newLast);
