@@ -268,7 +268,7 @@
     border-color: var(--sky);
     box-shadow: 0 0 0 3px rgba(58,123,213,0.12);
   }
-  .field input.error { border-color: var(--danger); background: #fff5f5; }
+  .field input.error, .field select.error { border-color: var(--danger); background: #fff5f5; }
 
   /* Declarations */
   .declarations { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
@@ -680,6 +680,14 @@
         <input type="text" id="f_child_name" placeholder="שם פרטי ושם משפחה">
       </div>
       <div class="field">
+        <label>כיתה <span class="req">*</span></label>
+        <select id="f_child_class">
+          <option value="">בחרו כיתה</option>
+          <option value="ב-1">ב-1</option>
+          <option value="ב-2">ב-2</option>
+        </select>
+      </div>
+      <div class="field">
         <label>תעודת זהות של התלמיד/ה <span class="req">*</span></label>
         <input type="text" id="f_child_id" placeholder="מספר ת.ז." maxlength="9" inputmode="numeric">
       </div>
@@ -876,7 +884,7 @@
 
   // --- Details Validation ---
   function validateDetails() {
-    const fields = ['f_child_name','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
+    const fields = ['f_child_name','f_child_class','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
     let ok = true;
     fields.forEach(id => {
       const el = document.getElementById(id);
@@ -1004,6 +1012,7 @@
   function buildSummary() {
     const fields = [
       { label: 'שם התלמיד/ה', val: document.getElementById('f_child_name').value },
+      { label: 'כיתה', val: document.getElementById('f_child_class').value },
       { label: 'ת.ז. תלמיד/ה', val: document.getElementById('f_child_id').value },
       { label: 'שם ההורה המלווה', val: document.getElementById('f_parent_name').value },
       { label: 'ת.ז. הורה מלווה', val: document.getElementById('f_parent_id').value },
@@ -1061,6 +1070,7 @@
     try {
       const payload = {
         childName: document.getElementById('f_child_name').value,
+        childClass: document.getElementById('f_child_class').value,
         childId: document.getElementById('f_child_id').value,
         parentName: document.getElementById('f_parent_name').value,
         parentId: document.getElementById('f_parent_id').value,
@@ -1090,6 +1100,7 @@
         <div class="receipt-title">פרטי האישור</div>
         <div class="receipt-row"><span class="r-key">מספר אסמכתא</span><span class="r-val" style="font-family:monospace;letter-spacing:1px">${refNum}</span></div>
         <div class="receipt-row"><span class="r-key">תלמיד/ה</span><span class="r-val">${document.getElementById('f_child_name').value}</span></div>
+        <div class="receipt-row"><span class="r-key">כיתה</span><span class="r-val">${document.getElementById('f_child_class').value}</span></div>
         <div class="receipt-row"><span class="r-key">הורה מלווה</span><span class="r-val">${document.getElementById('f_parent_name').value}</span></div>
         <div class="receipt-row"><span class="r-key">תאריך האירוע</span><span class="r-val">10/6/2026 | 16:00–19:00</span></div>
         <div class="receipt-row"><span class="r-key">מיקום</span><span class="r-val">בריכת כפר מעש</span></div>
