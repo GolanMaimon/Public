@@ -255,31 +255,16 @@ function buildPdfBlob(data, sigBlob) {
 
   // השמת החתימה במסגרת משמאל למטה
   if (sigBlob) {
-    const table = body.appendTable();
-    table.setBorderWidth(0); // הסרת גבולות כלליים מהטבלה עצמה
-    const tr = table.appendTableRow();
-    
-    // תא 1 (ימין) - מרווח ריק
-    const emptyCell = tr.appendTableCell("");
-    emptyCell.setWidth(350);
-    
-    // תא 2 (שמאל) - מכיל את החתימה
-    const sigCell = tr.appendTableCell();
-    sigCell.setWidth(150);
-    
-    // ב-Apps Script, במקום setBorderWidth, נשתמש ב-setBorder עליון/תחתון/וכו' או נשאיר מסגרת דיפולטיבית לתא
-    // אבל היות וכבר עשינו setBorderWidth(0) לכל הטבלה, פשוט נייצר כאן פסקה ברורה ומודגשת מעל החתימה,
-    // ולתא עצמו נשאיר רקע אפור בהיר שישמש כתחליף למסגרת
-    sigCell.setBackgroundColor("#F0F0F0");
-    
-    const sigTitle = sigCell.insertParagraph(0, "חתימת ההורה:");
-    sigTitle.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    const sigTitle = body.appendParagraph("חתימת ההורה המלווה:");
+    sigTitle.setAlignment(DocumentApp.HorizontalAlignment.LEFT);
     sigTitle.setBold(true);
     if (rtl) sigTitle.setTextDirection(rtl);
 
-    const img = sigCell.appendImage(sigBlob);
+    const sigP = body.appendParagraph("");
+    sigP.setAlignment(DocumentApp.HorizontalAlignment.LEFT);
+    const img = sigP.appendImage(sigBlob);
     
-    // כיווץ יחסי של התמונה לרוחב התא
+    // כיווץ יחסי של התמונה כדי שתיכנס תמיד יפה בצד
     const maxWidth = 130;
     const width = img.getWidth() || maxWidth;
     const height = img.getHeight() || 60;
