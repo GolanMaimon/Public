@@ -569,7 +569,7 @@
     <div class="detail-badge">🕓 16:00–19:00</div>
     <div class="detail-badge">📍 בריכת כפר מעש</div>
     <div class="detail-badge">🆕 עודכן: <span id="lastUpdated">16.05.2026 15:29</span></div>
-    <div class="detail-badge">🏷️ גרסה: <span id="versionLabel">v2026.05.16-1529</span></div>
+    <div class="detail-badge">🏷️ גרסה: <span id="versionLabel">טוען...</span></div>
   </div>
 </div>
 
@@ -784,14 +784,16 @@
   const EVENT_DATE = "10/6/2026";
   const LAST_UPDATED = "16.05.2026 15:29";
   const VERSION = "v2026.05.16-1529";
+  const REPO_OWNER = "GolanMaimon";
+  const REPO_NAME = "Public";
+  const REPO_BRANCH = "main";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBp0moayUbG4QSIxZ-5AHnHjhzQEPKJhq011cEMcv9ELMugKtU6qQrXnsXMTmGnU54/exec";
 
   // --- Init ---
   document.addEventListener('DOMContentLoaded', () => {
     initSignature();
     setSignDate();
-    setLastUpdated();
-    setVersion();
+    setVersionFromGithub();
   });
 
   function setSignDate() {
@@ -808,6 +810,37 @@
   function setVersion() {
     const el = document.getElementById('versionLabel');
     if (el) el.textContent = VERSION;
+  }
+
+  function formatDateTime(date) {
+    const pad = (num) => String(num).padStart(2, '0');
+    return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  async function setVersionFromGithub() {
+    try {
+      const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits/${REPO_BRANCH}`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const sha = data.sha ? data.sha.slice(0, 7) : '';
+      const dateStr = data.commit && data.commit.committer ? data.commit.committer.date : '';
+      if (sha) {
+        const verEl = document.getElementById('versionLabel');
+        if (verEl) verEl.textContent = `v-${sha}`;
+      } else {
+        setVersion();
+      }
+      if (dateStr) {
+        const dtEl = document.getElementById('lastUpdated');
+        if (dtEl) dtEl.textContent = formatDateTime(new Date(dateStr));
+      } else {
+        setLastUpdated();
+      }
+    } catch (err) {
+      setLastUpdated();
+      setVersion();
+    }
   }
 
   // --- Navigation ---
