@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="0; url=./PoolActivity/">
 <title>טופס אישור הורים – מסיבת סיום בבריכה כיתות ב׳</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -269,7 +268,7 @@
     border-color: var(--sky);
     box-shadow: 0 0 0 3px rgba(58,123,213,0.12);
   }
-  .field input.error { border-color: var(--danger); background: #fff5f5; }
+  .field input.error, .field select.error { border-color: var(--danger); background: #fff5f5; }
 
   /* Declarations */
   .declarations { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
@@ -625,11 +624,16 @@
   <!-- STEP 2: Declarations -->
   <div class="section" id="sec2">
     <div class="section-title"><span>✅</span> הצהרות ואישורים</div>
-    <div class="section-desc">יש לסמן את תיבת האישור.</div>
+    <div class="section-desc">אנא קראו את ההצהרות הבאות וסמנו את תיבת האישור.</div>
     <div class="declarations" id="declList">
-      <label class="decl-choice checkbox-label" style="display:flex;align-items:center;gap:10px;font-size:1.1rem;background:#f5f8fc;padding:15px;border-radius:10px;border:1px solid #bfd4e6;cursor:pointer;">
+      <div class="decl-item"><div class="decl-text">אני מאשר/ת כי ילדי/בתי <strong>יודע/ת לשחות</strong> בצורה טובה ומורשה/ית להיכנס למים. (ילד שאינו יודע לשחות ישהה במים הרדודים בלבד ו/או עם מצוף)</div></div>
+      <div class="decl-item"><div class="decl-text">אני מצהיר/ה כי ילדי/בתי <strong>כשיר/ה מבחינה רפואית, גופנית ונפשית</strong> להשתתף בפעילות במים, ואין מניעה רפואית כלשהי.</div></div>
+      <div class="decl-item"><div class="decl-text">אני מתחייב/ת <strong>להגיע פיזית</strong> לאירוע ולהשגיח על ילדי/בתי לאורך כל שעות הפעילות.</div></div>
+      <div class="decl-item"><div class="decl-text">קראתי את כל הסעיפים, הבנתי את <strong>משמעותם המשפטית</strong>, ואני מסכים/ה לויתור על תביעות כנגד הוועד.</div></div>
+      
+      <label class="decl-choice checkbox-label" style="display:flex;align-items:center;gap:10px;font-size:1.1rem;background:#f5f8fc;padding:15px;border-radius:10px;border:1px solid #bfd4e6;cursor:pointer;margin-top:10px;">
         <input type="checkbox" id="confirmRules" style="width:20px;height:20px;flex-shrink:0;">
-        אני מאשר/ת כי קראתי בעיון את כל הסעיפים המופיעים במסמך זה, הבנתי את משמעותם ואני מסכים/ה להם ומתחייב/ת לפעול על פיהם במלואם.
+        אני מאשר/ת כי קראתי בעיון את ההצהרות ואת כל הסעיפים המופיעים במסמך זה, הבנתי את משמעותם הפשוטה והמשפטית ואני מתחייב/ת לפעול על פיהם.
       </label>
     </div>
     <div class="error-msg" id="declError">⚠️ יש לסמן את תיבת האישור בטרם תמשיך/י</div>
@@ -645,6 +649,14 @@
       <div class="field">
         <label>שם מלא של התלמיד/ה <span class="req">*</span></label>
         <input type="text" id="f_child_name" placeholder="שם פרטי ושם משפחה">
+      </div>
+      <div class="field">
+        <label>כיתה <span class="req">*</span></label>
+        <select id="f_child_class">
+          <option value="">בחרו כיתה</option>
+          <option value="ב-1">ב-1</option>
+          <option value="ב-2">ב-2</option>
+        </select>
       </div>
       <div class="field">
         <label>תעודת זהות של התלמיד/ה <span class="req">*</span></label>
@@ -847,7 +859,7 @@
 
   // --- Details Validation ---
   function validateDetails() {
-    const fields = ['f_child_name','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
+    const fields = ['f_child_name','f_child_class','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
     let ok = true;
     fields.forEach(id => {
       const el = document.getElementById(id);
@@ -975,6 +987,7 @@
   function buildSummary() {
     const fields = [
       { label: 'שם התלמיד/ה', val: document.getElementById('f_child_name').value },
+      { label: 'כיתה', val: document.getElementById('f_child_class').value },
       { label: 'ת.ז. תלמיד/ה', val: document.getElementById('f_child_id').value },
       { label: 'שם ההורה המלווה', val: document.getElementById('f_parent_name').value },
       { label: 'ת.ז. הורה מלווה', val: document.getElementById('f_parent_id').value },
@@ -1004,6 +1017,8 @@
     document.getElementById('submitError').classList.remove('show');
   }
 
+
+
   async function submitForm() {
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
@@ -1013,6 +1028,7 @@
     try {
       const payload = {
         childName: document.getElementById('f_child_name').value,
+        childClass: document.getElementById('f_child_class').value,
         childId: document.getElementById('f_child_id').value,
         parentName: document.getElementById('f_parent_name').value,
         parentId: document.getElementById('f_parent_id').value,
@@ -1041,6 +1057,7 @@
         <div class="receipt-title">פרטי האישור</div>
         <div class="receipt-row"><span class="r-key">מספר אסמכתא</span><span class="r-val" style="font-family:monospace;letter-spacing:1px">${refNum}</span></div>
         <div class="receipt-row"><span class="r-key">תלמיד/ה</span><span class="r-val">${document.getElementById('f_child_name').value}</span></div>
+        <div class="receipt-row"><span class="r-key">כיתה</span><span class="r-val">${document.getElementById('f_child_class').value}</span></div>
         <div class="receipt-row"><span class="r-key">הורה מלווה</span><span class="r-val">${document.getElementById('f_parent_name').value}</span></div>
         <div class="receipt-row"><span class="r-key">תאריך האירוע</span><span class="r-val">10/6/2026 | 16:00–19:00</span></div>
         <div class="receipt-row"><span class="r-key">מיקום</span><span class="r-val">בריכת כפר מעש</span></div>
