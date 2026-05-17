@@ -72,7 +72,7 @@ function doPost(e) {
       }
     }
 
-    // שמירת חתימה כ-PNG
+    // המרת חתימה ל-Blob (ללא שמירת קובץ נפרד בדרייב)
     let sigLink = "";
     let sigBlob = null;
     if (data.signature && String(data.signature).startsWith("data:image")) {
@@ -80,12 +80,7 @@ function doPost(e) {
       const base64 = data.signature.split(",")[1];
       const bytes = Utilities.base64Decode(base64);
       sigBlob = Utilities.newBlob(bytes, "image/png", "signature.png");
-
-      const folder = DriveApp.getFolderById(FOLDER_ID);
-      const file = folder.createFile(sigBlob.copyBlob())
-        .setName(`signature_${childId || "unknown"}_${Date.now()}.png`);
-      sigLink = file.getUrl();
-      logMsg(runId, "signature saved: " + sigLink);
+      logMsg(runId, "signature blob created for PDF only");
     } else {
       logMsg(runId, "no signature in payload");
     }
@@ -209,11 +204,6 @@ function buildPdfBlob(data, sigBlob) {
     `אנו מבקשים מכם לקרוא בעיון רב מסמך זה, לחתום עליו ולהחזירו לנציגי הוועד.${rlm}`
   ).setBold(true);
   applyRtl(intro);
-
-  const notice = body.appendParagraph(
-    `${rlm}לתשומת לבכם: השתתפותו/ה של התלמיד/ה באירוע מותנית בהמצאת טופס זה כשהוא מלא וחתום במלואו, וכן בליווי הורה כפי שיפורט להלן.${rlm}`
-  ).setBold(true);
-  applyRtl(notice);
   
   const separator = body.appendParagraph("________________________________________").setBold(true);
   applyRtl(separator);
@@ -239,6 +229,14 @@ function buildPdfBlob(data, sigBlob) {
     let p = addRtlNumbered(body, i + 1, t);
     // איפוס מפורש ל-Bold כדי שלא ירש את ההדגשה מהפסקאות הקודמות (Google Docs מוריש עיצוב מפסקה לפסקה)
     p.editAsText().setBold(false);
+
+    // הדגשת המילים "לתשומת לבכם" אם קיימות בסעיף
+    let textObj = p.editAsText();
+    let textStr = textObj.getText();
+    let boldIndex = textStr.indexOf("לתשומת לבכם");
+    if (boldIndex !== -1) {
+      textObj.setBold(boldIndex, boldIndex + "לתשומת לבכם".length - 1, true);
+    }
   });
 
   const confirmText = `${rlm}אני החתום/ה מטה, הורה ו/או אפוטרופוס חוקי של התלמיד/ה, מאשר/ת בזאת כי קראתי בעיון את כל הסעיפים המופיעים במסמך זה, הבנתי את משמעותם המשפטית והכללית, ואני מסכים/ה להם ומתחייב/ת לפעול על פיהם במלואם ובאופן בלתי מסויג, לרבות הצהרתי כי בדקתי את השטח ומצאתיו תקין, והתחייבותי לנכוח באופן אישי במסיבת הסיום ולהשגיח על ילדי/בתי.${rlm}`;
@@ -246,7 +244,7 @@ function buildPdfBlob(data, sigBlob) {
   applyRtl(confirm);
 
   const fields = [
-    { label: "• שם מלא של התלמיד/ה:", val: data.childName },
+    { label: "• שם מלא של התלמיד/ה:", val: (data.childName || "") + "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0 כיתה: " + (data.childClass || "") },
     { label: "• תעודת זהות של התלמיד/ה:", val: data.childId },
     { label: "• שם מלא של ההורה המלווה שינכח באירוע:", val: data.parentName },
     { label: "• תעודת זהות של ההורה המלווה:", val: data.parentId },
@@ -316,7 +314,7 @@ function buildPdfBlob(data, sigBlob) {
   
   // תא שמאלי: חתימה
   const sigCellOuter = footerRow.appendTableCell();
-  sigCellOuter.setWidth(150); // מגביל את התא לרוחב המסגרת, כדי שהטקסט ימורכז בדיוק מעליה
+  sigCellOuter.setWidth(250); // מגביל את התא לרוחב המסגרת, הוגדל ל-250 לפי הצורך
 
   // תא ימני: תאריך
   const dateCellOuter = footerRow.appendTableCell();
@@ -336,15 +334,15 @@ function buildPdfBlob(data, sigBlob) {
       let sigRowInner = sigTableInner.appendTableRow();
       let sigCellInner = sigRowInner.appendTableCell();
       
-      // איפוס שוליים למסגרת
-      sigCellInner.setPaddingTop(0).setPaddingBottom(0).setPaddingLeft(0).setPaddingRight(0);
+      // איפוס שוליים למסגרת עם מעט ריווח לאיור
+      sigCellInner.setPaddingTop(5).setPaddingBottom(5).setPaddingLeft(0).setPaddingRight(0);
       
       let sigImgP = sigCellInner.getChild(0).asParagraph();
       sigImgP.setAlignment(DocumentApp.HorizontalAlignment.CENTER); // גם התמונה תמורכז
       sigImgP.setSpacingBefore(0).setSpacingAfter(0).setLineSpacing(1.0);
 
       const img = sigImgP.appendInlineImage(sigBlob);
-      const targetWidth = 150; 
+      const targetWidth = 250; 
       const width = img.getWidth() || targetWidth;
       const height = img.getHeight() || 60;
       img.setWidth(targetWidth);
