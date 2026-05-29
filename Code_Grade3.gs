@@ -96,6 +96,26 @@ function doPost(e) {
     const pdfLink = pdfFile.getUrl();
     logMsg(runId, "pdf saved: " + pdfLink);
 
+    // יצירה/עדכון של קובץ CSV מרוכז בתיקיית הדרייב (3 עמודות בלבד, ללא תעודות זהות)
+    try {
+      const csvName = "ריכוז_נרשמים_שכבת_ג.csv";
+      const csvFiles = folder.getFilesByName(csvName);
+      const esc = function(v) { return '"' + String(v || "").replace(/"/g, '""') + '"'; };
+      const newRow = [esc(data.childName), esc(data.childClass), esc(data.parentName)].join(",") + "\r\n";
+      if (csvFiles.hasNext()) {
+        const csvFile = csvFiles.next();
+        const existing = csvFile.getBlob().getDataAsString("UTF-8");
+        csvFile.setContent(existing + newRow);
+      } else {
+        const bom = "\uFEFF";
+        const header = [esc("שם התלמיד/ה"), esc("כיתה"), esc("שם ההורה המלווה")].join(",") + "\r\n";
+        folder.createFile(csvName, bom + header + newRow, MimeType.CSV);
+      }
+      logMsg(runId, "csv updated: " + csvName);
+    } catch (csvErr) {
+      logMsg(runId, "csv error: " + csvErr.message);
+    }
+
     // הוספת שורה לגיליון - הסדר תוקן שיתאים בדיוק לעמודות
     sheet.appendRow([
       now.toLocaleString("he-IL"),  // תאריך הגשה
