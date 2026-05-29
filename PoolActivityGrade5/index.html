@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>טופס אישור הורים – מסיבת סיום בבריכה כיתות ה׳</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2744;
+    --blue: #1a4a8a;
+    --sky: #3a7bd5;
+    --water: #e8f4fd;
+    --wave: #b8dff7;
+    --gold: #e8a020;
+    --white: #ffffff;
+    --gray: #6b7a8d;
+    --light: #f4f8fd;
+    --border: #c8dff0;
+    --danger: #c0392b;
+    --success: #27ae60;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: linear-gradient(160deg, #e8f4fd 0%, #f0f8ff 50%, #e0eef8 100%);
+    min-height: 100vh;
+    color: var(--navy);
+  }
+
+  /* Wave header */
+  .header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 60%, var(--sky) 100%);
+    padding: 40px 20px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 60px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f4f8fd' d='M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom;
+    background-size: cover;
+  }
+
+  .header-icon { font-size: 48px; margin-bottom: 12px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .header h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(24px, 5vw, 38px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.3;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .header-sub {
+    color: var(--wave);
+    font-size: 16px;
+    font-weight: 300;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+  }
+  .header-details {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .detail-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Progress */
+  .progress-bar-wrap {
+    background: var(--white);
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(15,39,68,0.08);
+  }
+  .progress-steps {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -50%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    z-index: -1;
+  }
+  .step.done::after { background: var(--sky); }
+  .step-circle {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--white);
+    color: var(--gray);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    margin: 0 auto;
+  }
+  .step.active .step-circle {
+    border-color: var(--sky);
+    background: var(--sky);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(58,123,213,0.2);
+  }
+  .step.done .step-circle {
+    border-color: var(--success);
+    background: var(--success);
+    color: white;
+  }
+  .step-label {
+    font-size: 11px;
+    color: var(--gray);
+    text-align: center;
+    display: none;
+  }
+  @media(min-width:480px){ .step-label { display: block; } }
+
+  /* Main */
+  .container { max-width: 780px; margin: 0 auto; padding: 32px 16px 60px; }
+
+  /* Sections */
+  .section {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 16px rgba(15,39,68,0.06);
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  .section-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title span { font-size: 24px; }
+  .section-desc {
+    color: var(--gray);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* Alert box */
+  .alert {
+    background: linear-gradient(135deg, #fff8e1, #fff3cd);
+    border: 1px solid #f0c060;
+    border-right: 4px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #7a5700;
+  }
+  .alert strong { color: #5a3f00; }
+
+  /* Terms */
+  .terms-box {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    max-height: 340px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 2;
+    scroll-behavior: smooth;
+  }
+  .terms-box::-webkit-scrollbar { width: 6px; }
+  .terms-box::-webkit-scrollbar-track { background: var(--border); border-radius: 3px; }
+  .terms-box::-webkit-scrollbar-thumb { background: var(--sky); border-radius: 3px; }
+
+  .term-item {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border-right: 3px solid var(--wave);
+    background: white;
+    font-size: 13.5px;
+    line-height: 1.8;
+    transition: border-color 0.2s;
+  }
+  .term-item:hover { border-right-color: var(--sky); }
+
+  /* Form fields */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media(max-width:520px){ .field-grid { grid-template-columns: 1fr; } }
+  .field-grid.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .field label .req { color: var(--danger); margin-right: 2px; }
+  .field input, .field select {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    background: var(--white);
+    outline: none;
+    transition: all 0.2s;
+    direction: rtl;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(58,123,213,0.12);
+  }
+  .field input.error, .field select.error { border-color: var(--danger); background: #fff5f5; }
+
+  /* Declarations */
+  .declarations { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .decl-item {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+  }
+  .decl-item:hover { border-color: var(--sky); background: var(--water); }
+  .decl-text { font-size: 14px; line-height: 1.7; color: var(--navy); margin-bottom: 10px; }
+  .decl-text strong { color: var(--blue); }
+  .decl-choices { display: flex; gap: 12px; flex-wrap: wrap; }
+  .decl-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .decl-choice input { accent-color: var(--sky); }
+
+  /* Signature pad */
+  .sig-wrap {
+    margin-bottom: 20px;
+  }
+  .sig-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sig-canvas-wrap {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: var(--light);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    cursor: crosshair;
+  }
+  .sig-canvas-wrap:hover { border-color: var(--sky); }
+  .sig-canvas-wrap.has-sig { border-style: solid; border-color: var(--sky); background: white; }
+  canvas#sigPad {
+    display: block;
+    width: 100%;
+    height: 160px;
+    touch-action: none;
+  }
+  .sig-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+    pointer-events: none;
+    gap: 8px;
+    transition: opacity 0.3s;
+  }
+  .sig-placeholder svg { opacity: 0.4; }
+  .sig-placeholder p { font-size: 13px; opacity: 0.7; }
+  .sig-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-end;
+  }
+  .btn-clear {
+    background: none;
+    border: 1.5px solid var(--border);
+    color: var(--gray);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* Date display */
+  .date-display {
+    background: var(--water);
+    border: 1px solid var(--wave);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--blue);
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Buttons */
+  .btn-next, .btn-submit {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .btn-next {
+    background: linear-gradient(135deg, var(--blue), var(--sky));
+    color: white;
+    box-shadow: 0 4px 16px rgba(26,74,138,0.3);
+  }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,74,138,0.4); }
+  .btn-next:active { transform: translateY(0); }
+  .btn-back {
+    width: 100%;
+    padding: 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+  }
+  .btn-back:hover { border-color: var(--sky); color: var(--navy); }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--success), #2ecc71);
+    color: white;
+    box-shadow: 0 4px 16px rgba(39,174,96,0.3);
+    font-size: 18px;
+  }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(39,174,96,0.4); }
+  .btn-submit:disabled {
+    background: var(--border);
+    color: var(--gray);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Error msg */
+  .error-msg {
+    background: #fff5f5;
+    border: 1px solid #fcc;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--danger);
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+  .error-msg.show { display: flex; }
+
+  /* Summary */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:480px){ .summary-grid { grid-template-columns: 1fr; } }
+  .summary-item {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .summary-item .s-label { font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .summary-item .s-val { font-size: 15px; color: var(--navy); font-weight: 500; }
+  .sig-preview {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .sig-preview img { max-width: 100%; height: 80px; object-fit: contain; }
+  .sig-preview p { font-size: 12px; color: var(--gray); margin-top: 6px; }
+
+  /* Success */
+  .success-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .success-icon {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--success), #2ecc71);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 24px rgba(39,174,96,0.35);
+    animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes pop { from{transform:scale(0)} to{transform:scale(1)} }
+  .success-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 12px;
+  }
+  .success-sub { color: var(--gray); font-size: 15px; line-height: 1.8; margin-bottom: 28px; }
+
+  .receipt {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: right;
+    margin-bottom: 24px;
+  }
+  .receipt-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+  .receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .receipt-row:last-child { border-bottom: none; }
+  .receipt-row .r-key { color: var(--gray); }
+  .receipt-row .r-val { color: var(--navy); font-weight: 500; }
+
+  .btn-print {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-print:hover { border-color: var(--sky); box-shadow: 0 2px 12px rgba(58,123,213,0.15); }
+
+  @media print {
+    .progress-bar-wrap, .btn-back, .btn-print { display: none; }
+    .success-screen { padding: 20px; }
+  }
+
+  /* Scroll progress indicator */
+  .scroll-hint {
+    text-align: center;
+    color: var(--gray);
+    font-size: 12px;
+    margin-top: 8px;
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(4px)} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🏊</div>
+  <h1>טופס אישור הורים<br>מסיבת סיום שכבת כיתות ה׳</h1>
+  <div class="header-sub">בית ספר "ערמונים"</div>
+  <div class="header-details">
+    <div class="detail-badge">📅 11/6/2026</div>
+    <div class="detail-badge">🕓 16:00–19:00</div>
+    <div class="detail-badge">📍 בריכת כפר מעש</div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-steps">
+    <div class="step active" id="step-ind-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">תנאים</div>
+    </div>
+    <div class="step" id="step-ind-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">הצהרות</div>
+    </div>
+    <div class="step" id="step-ind-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">פרטים</div>
+    </div>
+    <div class="step" id="step-ind-4">
+      <div class="step-circle">4</div>
+      <div class="step-label">חתימה</div>
+    </div>
+    <div class="step" id="step-ind-5">
+      <div class="step-circle">5</div>
+      <div class="step-label">אישור</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1: Terms -->
+  <div class="section active" id="sec1">
+    <div class="section-title"><span>📋</span> תנאי ההשתתפות</div>
+    <div class="section-desc">יש לקרוא את כל הסעיפים בעיון לפני המעבר לשלב הבא.</div>
+    <div class="alert">
+      <strong>⚠️ לתשומת לבכם:</strong> השתתפותו/ה של התלמיד/ה באירוע מותנית בהמצאת טופס זה כשהוא מלא וחתום במלואו, וכן בליווי הורה לאורך כל האירוע.
+    </div>
+    <div class="terms-box" id="termsBox">
+      <div class="term-item">נציגי הוועד הם הורים מבית הספר הפועלים בהתנדבות מלאה. תפקידם מוגבל לתיאום לוגיסטי בלבד ואינם משמשים כמפיקים, מצילים או אחראים על ביטחון הילדים.</div>
+      <div class="term-item"><strong>חובה מוחלטת:</strong> נוכחות פיזית של הורה או אפוטרופוס חוקי עבור כל ילד לאורך כל שעות הפעילות.</div>
+      <div class="term-item">לא תותר כניסה או שהות של ילד למתחם הבריכה ללא השגחה צמודה ורציפה של ההורה.</div>
+      <div class="term-item">ההורה המלווה נושא באחריות המלאה להשגחה על ילדו, בדגש על שהות במים ובסביבת הבריכה.</div>
+      <div class="term-item">אין ולא תהיה כל אחריות להורי ועד כיתות ה׳ לכל נזק (גוף, נפש או רכוש), פציעה, אובדן או פגיעה שיגרמו לילד במהלך האירוע, בדרך אליו או בחזרה ממנו.</div>
+      <div class="term-item">האחריות המלאה, הבלעדית והמוחלטת לשלום, ביטחון, בריאות והתנהגות הילד מוטלת על ההורים בלבד.</div>
+      <div class="term-item">ילד שאינו יודע לשחות בצורה טובה מחויב לשהות אך ורק במים הרדודים ו/או להצטייד במצופים, בנוסף לאחריות ההורה המלווה.</div>
+      <div class="term-item">ההורים מתחייבים כי שוחחו עם הילד והנחו אותו להישמע להוראות הבטיחות של הנהלת הבריכה, המצילים ואנשי הצוות.</div>
+      <div class="term-item">ההורים מוותרים ויתור סופי, מוחלט ובלתי חוזר על כל טענה, דרישת פיצוי, קובלנה ו/או תביעה משפטית כנגד הורי ועד כיתות ה׳ 1-2 ו/או מי מטעמם.</div>
+      <div class="term-item">ככל שתוגש תביעה בניגוד לאמור, מתחייבים ההורים לשאת בכל ההוצאות והנזקים שיגרמו לוועד.</div>
+    </div>
+    <div class="scroll-hint">▼ גלול לקרוא את כל התנאים</div>
+    <button class="btn-next" onclick="goTo(2)">קראתי והבנתי – המשך ←</button>
+  </div>
+
+  <!-- STEP 2: Declarations -->
+  <div class="section" id="sec2">
+    <div class="section-title"><span>✅</span> הצהרות ואישורים</div>
+    <div class="section-desc">אנא קראו את ההצהרות הבאות וסמנו את תיבת האישור.</div>
+    <div class="declarations" id="declList">
+      <div class="decl-item"><div class="decl-text">אני מאשר/ת כי ילדי/בתי <strong>יודע/ת לשחות</strong> בצורה טובה ומורשה/ית להיכנס למים. (ילד שאינו יודע לשחות ישהה במים הרדודים בלבד ו/או עם מצוף)</div></div>
+      <div class="decl-item"><div class="decl-text">אני מצהיר/ה כי ילדי/בתי <strong>כשיר/ה מבחינה רפואית, גופנית ונפשית</strong> להשתתף בפעילות במים, ואין מניעה רפואית כלשהי.</div></div>
+      <div class="decl-item"><div class="decl-text">אני מתחייב/ת <strong>להגיע פיזית</strong> לאירוע ולהשגיח על ילדי/בתי לאורך כל שעות הפעילות.</div></div>
+      <div class="decl-item"><div class="decl-text">קראתי את כל הסעיפים, הבנתי את <strong>משמעותם המשפטית</strong>, ואני מסכים/ה לויתור על תביעות כנגד הוועד.</div></div>
+      
+      <label class="decl-choice checkbox-label" style="display:flex;align-items:center;gap:10px;font-size:1.1rem;background:#f5f8fc;padding:15px;border-radius:10px;border:1px solid #bfd4e6;cursor:pointer;margin-top:10px;">
+        <input type="checkbox" id="confirmRules" style="width:20px;height:20px;flex-shrink:0;">
+        אני מאשר/ת כי קראתי בעיון את ההצהרות ואת כל הסעיפים המופיעים במסמך זה, הבנתי את משמעותם הפשוטה והמשפטית ואני מתחייב/ת לפעול על פיהם.
+      </label>
+    </div>
+    <div class="error-msg" id="declError">⚠️ יש לסמן את תיבת האישור בטרם תמשיך/י</div>
+    <button class="btn-next" onclick="validateDecls()">המשך ←</button>
+    <button class="btn-back" onclick="goTo(1)">← חזור</button>
+  </div>
+
+  <!-- STEP 3: Details -->
+  <div class="section" id="sec3">
+    <div class="section-title"><span>👤</span> פרטי התלמיד/ה וההורה</div>
+    <div class="section-desc">מלאו את כל הפרטים הנדרשים.</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>שם מלא של התלמיד/ה <span class="req">*</span></label>
+        <input type="text" id="f_child_name" placeholder="שם פרטי ושם משפחה">
+      </div>
+      <div class="field">
+        <label>כיתה <span class="req">*</span></label>
+        <select id="f_child_class">
+          <option value="">בחרו כיתה</option>
+          <option value="ה-1">ה-1</option>
+          <option value="ה-2">ה-2</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>תעודת זהות של התלמיד/ה <span class="req">*</span></label>
+        <input type="text" id="f_child_id" placeholder="מספר ת.ז." maxlength="9" inputmode="numeric">
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label>שם מלא של ההורה המלווה <span class="req">*</span></label>
+        <input type="text" id="f_parent_name" placeholder="שם פרטי ושם משפחה">
+      </div>
+      <div class="field">
+        <label>תעודת זהות של ההורה המלווה <span class="req">*</span></label>
+        <input type="text" id="f_parent_id" placeholder="מספר ת.ז." maxlength="9" inputmode="numeric">
+      </div>
+    </div>
+    <div class="field-grid full">
+      <div class="field">
+        <label>כתובת מגורים <span class="req">*</span></label>
+        <input type="text" id="f_address" placeholder="רחוב, מספר בית, עיר">
+      </div>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label>טלפון נייד של ההורה המלווה <span class="req">*</span></label>
+        <input type="tel" id="f_phone" placeholder="05X-XXXXXXX" inputmode="tel">
+      </div>
+      <div class="field">
+        <label>טלפון נוסף לשעת חירום</label>
+        <input type="tel" id="f_phone2" placeholder="05X-XXXXXXX" inputmode="tel">
+      </div>
+    </div>
+    <div class="error-msg" id="detailsError">⚠️ יש למלא את כל השדות המסומנים בכוכבית</div>
+    <button class="btn-next" onclick="validateDetails()">המשך ←</button>
+    <button class="btn-back" onclick="goTo(2)">← חזור</button>
+  </div>
+
+  <!-- STEP 4: Signature -->
+  <div class="section" id="sec4">
+    <div class="section-title"><span>✍️</span> חתימה דיגיטלית</div>
+    <div class="section-desc">חתמו באזור המסומן בעזרת האצבע (מובייל) או העכבר.</div>
+    <div class="date-display">
+      📅 תאריך החתימה: <strong id="signDate"></strong>
+    </div>
+    <div class="sig-wrap">
+      <div class="sig-label">✍️ חתימת ההורה המלווה <span class="req" style="color:var(--danger)">*</span></div>
+      <div class="sig-canvas-wrap" id="sigWrap">
+        <canvas id="sigPad"></canvas>
+        <div class="sig-placeholder" id="sigPlaceholder">
+          <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#aaa" stroke-width="1.5">
+            <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          <p>לחץ/י כאן וחתום/י</p>
+        </div>
+      </div>
+      <div class="sig-actions">
+        <button class="btn-clear" onclick="clearSig()">🗑️ נקה חתימה</button>
+      </div>
+    </div>
+    <div class="error-msg" id="sigError">⚠️ יש לחתום לפני המשך</div>
+    <button class="btn-next" onclick="validateSig()">המשך לאישור סופי ←</button>
+    <button class="btn-back" onclick="goTo(3)">← חזור</button>
+  </div>
+
+  <!-- STEP 5: Review & Submit -->
+  <div class="section" id="sec5">
+    <div class="section-title"><span>📄</span> סיכום ואישור סופי</div>
+    <div class="section-desc">בדקו את הפרטים ולחצו על "שלח טופס" לאישור סופי.</div>
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="sig-preview">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:8px;">חתימה דיגיטלית</div>
+      <img id="sigPreviewImg" src="" alt="חתימה">
+      <p id="sigPreviewDate"></p>
+    </div>
+    <div class="alert" style="margin-bottom:20px;">
+      <strong>🔒 הצהרה סופית:</strong> בלחיצה על "שלח טופס" אני מאשר/ת כי קראתי את כל הסעיפים, הבנתי את משמעותם, ואני מסכים/ה להם ומתחייב/ת לפעול על פיהם במלואם.
+    </div>
+    <div class="error-msg" id="submitError">⚠️ שליחה נכשלה. בדקו את החיבור ונסו שוב.</div>
+    <button class="btn-submit" onclick="submitForm()" id="submitBtn">✅ שלח טופס ואשר השתתפות</button>
+    <button class="btn-back" onclick="goTo(4)">← חזור לעריכה</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="section" id="secSuccess">
+    <div class="success-screen">
+      <div class="success-icon">✓</div>
+      <div class="success-title">הטופס נשלח בהצלחה! 🎉</div>
+      <div class="success-sub">
+        תודה! הרשמת ילדך/ת לאירוע אושרה.<br>
+        נתראה ב-11 ביוני 2026 בבריכת כפר מעש!
+      </div>
+      <div class="receipt" id="finalReceipt"></div>
+      <button class="btn-print" onclick="window.print()">🖨️ הדפס אישור</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="version-footer" style="text-align: center; font-size: 11px; color: #888; margin-top: 30px; margin-bottom: 20px; font-family: monospace; border-top: 1px solid #ddd; padding-top: 10px;">
+  <span style="font-weight: bold;">גירסה: </span><span id="versionLabel">טוען...</span> |
+  <span style="font-weight: bold;">תאריך עדכון: </span><span id="lastUpdated">16.05.2026 15:29</span>
+</div>
+
+<script>
+  // --- State ---
+  let currentStep = 1;
+  let sigCanvas, sigCtx, drawing = false, hasSig = false;
+  let lastX = 0, lastY = 0;
+  const EVENT_DATE = "11/6/2026";
+  const LAST_UPDATED = "16.05.2026 15:29";
+  const VERSION = "v2026.05.16-1529";
+  const REPO_OWNER = "GolanMaimon";
+  const REPO_NAME = "Public";
+  const REPO_BRANCH = "main";
+  const APPS_SCRIPT_URL = "YOUR_NEW_URL_HERE"; // Update this with new App Script Web App URL
+
+  // --- Init ---
+  document.addEventListener('DOMContentLoaded', () => {
+    initSignature();
+    setSignDate();
+    setVersionFromGithub();
+  });
+
+  function setSignDate() {
+    const now = new Date();
+    const d = now.toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('signDate').textContent = d;
+  }
+
+  function setLastUpdated() {
+    const el = document.getElementById('lastUpdated');
+    if (el) el.textContent = LAST_UPDATED;
+  }
+
+  function setVersion() {
+    const el = document.getElementById('versionLabel');
+    if (el) el.textContent = VERSION;
+  }
+
+  function formatDateTime(date) {
+    const pad = (num) => String(num).padStart(2, '0');
+    return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  async function setVersionFromGithub() {
+    try {
+      const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits/${REPO_BRANCH}`;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const sha = data.sha ? data.sha.slice(0, 7) : '';
+      const dateStr = data.commit && data.commit.committer ? data.commit.committer.date : '';
+      if (sha) {
+        const verEl = document.getElementById('versionLabel');
+        if (verEl) verEl.textContent = `v-${sha}`;
+      } else {
+        setVersion();
+      }
+      if (dateStr) {
+        const dtEl = document.getElementById('lastUpdated');
+        if (dtEl) dtEl.textContent = formatDateTime(new Date(dateStr));
+      } else {
+        setLastUpdated();
+      }
+    } catch (err) {
+      setLastUpdated();
+      setVersion();
+    }
+  }
+
+  // --- Navigation ---
+  function goTo(step) {
+    document.getElementById('sec' + currentStep).classList.remove('active');
+    // Update step indicators
+    for (let i = 1; i <= 5; i++) {
+      const ind = document.getElementById('step-ind-' + i);
+      ind.classList.remove('active', 'done');
+      if (i < step) ind.classList.add('done'), ind.querySelector('.step-circle').textContent = '✓';
+      else if (i === step) ind.classList.add('active'), ind.querySelector('.step-circle').textContent = i;
+      else ind.querySelector('.step-circle').textContent = i;
+    }
+    currentStep = step;
+    document.getElementById('sec' + step).classList.add('active');
+    if (step === 4) {
+      // Ensure canvas has a real size once the signature section is visible.
+      requestAnimationFrame(resizeCanvas);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validateDecls() {
+    const isChecked = document.getElementById('confirmRules').checked;
+    if (!isChecked) {
+      document.getElementById('declError').classList.add('show');
+      return;
+    }
+    document.getElementById('declError').classList.remove('show');
+    goTo(3);
+  }
+
+  // --- Details Validation ---
+  function validateDetails() {
+    const fields = ['f_child_name','f_child_class','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
+    let ok = true;
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        ok = false;
+      } else {
+        el.classList.remove('error');
+      }
+    });
+    const err = document.getElementById('detailsError');
+    if (!ok) { err.classList.add('show'); return; }
+    err.classList.remove('show');
+    goTo(4);
+  }
+
+  // --- Signature Pad ---
+  function initSignature() {
+    sigCanvas = document.getElementById('sigPad');
+    sigCtx = sigCanvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => resizeCanvas());
+      ro.observe(sigCanvas.parentElement);
+    } else {
+      setTimeout(resizeCanvas, 100);
+      setTimeout(resizeCanvas, 400);
+    }
+
+    if (window.PointerEvent) {
+      sigCanvas.addEventListener('pointerdown', startDraw);
+      sigCanvas.addEventListener('pointermove', draw);
+      sigCanvas.addEventListener('pointerup', stopDraw);
+      sigCanvas.addEventListener('pointerleave', stopDraw);
+      sigCanvas.addEventListener('pointercancel', stopDraw);
+    }
+
+    // Always register mouse/touch as a fallback for mobile browsers.
+    sigCanvas.addEventListener('mousedown', startDraw);
+    sigCanvas.addEventListener('mousemove', draw);
+    sigCanvas.addEventListener('mouseup', stopDraw);
+    sigCanvas.addEventListener('mouseleave', stopDraw);
+    sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
+    sigCanvas.addEventListener('touchmove', draw, { passive: false });
+    sigCanvas.addEventListener('touchend', stopDraw);
+  }
+
+  function resizeCanvas() {
+    const rect = sigCanvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const w = rect.width; const h = 160;
+    if (!w) return;
+    sigCanvas.width = w * dpr; sigCanvas.height = h * dpr;
+    sigCanvas.style.width = w + 'px'; sigCanvas.style.height = h + 'px';
+    sigCtx.setTransform(1, 0, 0, 1, 0, 0);
+    sigCtx.scale(dpr, dpr);
+    sigCtx.strokeStyle = '#1a4a8a';
+    sigCtx.lineWidth = 2.5;
+    sigCtx.lineCap = 'round';
+    sigCtx.lineJoin = 'round';
+  }
+
+  function getPos(e) {
+    const rect = sigCanvas.getBoundingClientRect();
+    let point = e;
+    if (e.touches && e.touches[0]) point = e.touches[0];
+    else if (e.changedTouches && e.changedTouches[0]) point = e.changedTouches[0];
+    return { x: (point.clientX || point.pageX) - rect.left, y: (point.clientY || point.pageY) - rect.top };
+  }
+
+  function startDraw(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.pointerId != null && sigCanvas.setPointerCapture) {
+      sigCanvas.setPointerCapture(e.pointerId);
+    }
+    drawing = true;
+    const pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+    sigCtx.beginPath();
+    sigCtx.moveTo(lastX, lastY);
+  }
+
+  function draw(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!drawing) return;
+    const pos = getPos(e);
+    sigCtx.lineTo(pos.x, pos.y);
+    sigCtx.stroke();
+    lastX = pos.x; lastY = pos.y;
+    if (!hasSig) {
+      hasSig = true;
+      document.getElementById('sigWrap').classList.add('has-sig');
+      document.getElementById('sigPlaceholder').style.opacity = '0';
+    }
+  }
+
+  function stopDraw(e) {
+    if (e && e.pointerId != null && sigCanvas.releasePointerCapture) {
+      sigCanvas.releasePointerCapture(e.pointerId);
+    }
+    drawing = false;
+  }
+
+  function clearSig() {
+    const rect = sigCanvas.getBoundingClientRect();
+    sigCtx.clearRect(0, 0, rect.width * (window.devicePixelRatio||1), rect.height * (window.devicePixelRatio||1));
+    hasSig = false;
+    document.getElementById('sigWrap').classList.remove('has-sig');
+    document.getElementById('sigPlaceholder').style.opacity = '1';
+  }
+
+  function validateSig() {
+    if (!hasSig) {
+      document.getElementById('sigError').classList.add('show');
+      return;
+    }
+    document.getElementById('sigError').classList.remove('show');
+    buildSummary();
+    goTo(5);
+  }
+
+  // --- Summary ---
+  function buildSummary() {
+    const fields = [
+      { label: 'שם התלמיד/ה', val: document.getElementById('f_child_name').value },
+      { label: 'כיתה', val: document.getElementById('f_child_class').value },
+      { label: 'ת.ז. תלמיד/ה', val: document.getElementById('f_child_id').value },
+      { label: 'שם ההורה המלווה', val: document.getElementById('f_parent_name').value },
+      { label: 'ת.ז. הורה מלווה', val: document.getElementById('f_parent_id').value },
+      { label: 'כתובת', val: document.getElementById('f_address').value },
+      { label: 'טלפון נייד', val: document.getElementById('f_phone').value },
+    ];
+    const grid = document.getElementById('summaryGrid');
+    grid.innerHTML = fields.map(f => `
+      <div class="summary-item">
+        <div class="s-label">${f.label}</div>
+        <div class="s-val">${f.val || '—'}</div>
+      </div>
+    `).join('');
+    const imgEl = document.getElementById('sigPreviewImg');
+    imgEl.src = sigCanvas.toDataURL('image/png');
+    document.getElementById('sigPreviewDate').textContent = 'נחתם ב-' + document.getElementById('signDate').textContent;
+  }
+
+  // --- Submit ---
+  function showSubmitError(message) {
+    const el = document.getElementById('submitError');
+    el.textContent = message;
+    el.classList.add('show');
+  }
+
+  function hideSubmitError() {
+    document.getElementById('submitError').classList.remove('show');
+  }
+
+
+
+  async function submitForm() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ שולח...';
+    hideSubmitError();
+
+    try {
+      const payload = {
+        childName: document.getElementById('f_child_name').value,
+        childClass: document.getElementById('f_child_class').value,
+        childId: document.getElementById('f_child_id').value,
+        parentName: document.getElementById('f_parent_name').value,
+        parentId: document.getElementById('f_parent_id').value,
+        address: document.getElementById('f_address').value,
+        phone: document.getElementById('f_phone').value,
+        phone2: document.getElementById('f_phone2').value,
+        eventDate: EVENT_DATE,
+        signDate: document.getElementById('signDate').textContent,
+        signature: sigCanvas.toDataURL('image/png')
+      };
+
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Submit failed');
+
+      const receipt = document.getElementById('finalReceipt');
+      const now = new Date();
+      const refNum = 'EB-' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '-' + Math.floor(Math.random()*9000+1000);
+      receipt.innerHTML = `
+        <div class="receipt-title">פרטי האישור</div>
+        <div class="receipt-row"><span class="r-key">מספר אסמכתא</span><span class="r-val" style="font-family:monospace;letter-spacing:1px">${refNum}</span></div>
+        <div class="receipt-row"><span class="r-key">תלמיד/ה</span><span class="r-val">${document.getElementById('f_child_name').value}</span></div>
+        <div class="receipt-row"><span class="r-key">כיתה</span><span class="r-val">${document.getElementById('f_child_class').value}</span></div>
+        <div class="receipt-row"><span class="r-key">הורה מלווה</span><span class="r-val">${document.getElementById('f_parent_name').value}</span></div>
+        <div class="receipt-row"><span class="r-key">תאריך האירוע</span><span class="r-val">10/6/2026 | 16:00–19:00</span></div>
+        <div class="receipt-row"><span class="r-key">מיקום</span><span class="r-val">בריכת כפר מעש</span></div>
+        <div class="receipt-row"><span class="r-key">נשלח בתאריך</span><span class="r-val">${now.toLocaleDateString('he-IL')}</span></div>
+      `;
+
+      for (let i = 1; i <= 5; i++) document.getElementById('sec'+i).classList.remove('active');
+      document.getElementById('secSuccess').classList.add('active');
+      for (let i = 1; i <= 5; i++) {
+        const ind = document.getElementById('step-ind-' + i);
+        ind.classList.remove('active'); ind.classList.add('done');
+        ind.querySelector('.step-circle').textContent = '✓';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = '✅ שלח טופס ואשר השתתפות';
+      showSubmitError('⚠️ שליחה נכשלה. נסו שוב. (' + err.message + ')');
+    }
+  }
+</script>
+</body>
+</html>
