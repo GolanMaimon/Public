@@ -129,7 +129,7 @@ function doPost(e) {
       now.toLocaleString("he-IL"),  // תאריך הגשה
       eventDate,                    // תאריך האירוע
       data.childName  || "",        // שם התלמיד/ה
-      data.childClass || "",        // כיתה  <-- נוספה כאן בדיוק לאחר שם התלמיד לפי העמודות
+      data.childClass || "",        // כיתה
       childId,                      // ת.ז. תלמיד/ה
       data.parentName || "",        // שם ההורה המלווה
       data.parentId   || "",        // ת.ז. הורה מלווה
@@ -141,7 +141,13 @@ function doPost(e) {
     ]);
 
     const newLast = sheet.getLastRow();
-    
+
+    // כפיית טקסט מפורש על עמודות ת.ז וטלפון — appendRow מתעלם מפורמט עמודה ומכריח מספר
+    [[5, childId], [7, data.parentId || ""], [9, data.phone || ""], [10, data.phone2 || ""]]
+      .forEach(function(pair) {
+        sheet.getRange(newLast, pair[0]).setNumberFormat("@").setValue(String(pair[1]));
+      });
+
     if (newLast % 2 === 0) {
       sheet.getRange(newLast, 1, 1, 12).setBackground("#e8f4fd");
     }
