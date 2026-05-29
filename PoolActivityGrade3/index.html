@@ -859,20 +859,82 @@
   }
 
   // --- Details Validation ---
+  // בדיקת תקינות תעודת זהות ישראלית (כולל ספרת ביקורת)
+  function isValidIsraeliID(id) {
+    id = String(id).trim();
+    if (id.length > 9 || id.length < 5 || isNaN(id)) return false;
+    id = id.length < 9 ? ("00000000" + id).slice(-9) : id;
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      let digit = parseInt(id[i]);
+      let step = digit * ((i % 2) + 1);
+      sum += step > 9 ? step - 9 : step;
+    }
+    return sum % 10 === 0;
+  }
+
+  // בדיקת טלפון נייד ישראלי (05X ו-10 ספרות)
+  function isValidIsraeliPhone(phone) {
+    phone = phone.replace(/[\s\-]/g, ''); // מסיר רווחים ומקפים
+    return /^05\d{8}$/.test(phone);
+  }
+
   function validateDetails() {
-    const fields = ['f_child_name','f_child_class','f_child_id','f_parent_name','f_parent_id','f_address','f_phone'];
+    // מערך ההגדרות לכל שדה בטופס
+    const validationRules = [
+      { id: 'f_child_name', required: true, type: 'name', label: 'שם התלמיד/ה' },
+      { id: 'f_child_class', required: true, type: 'text', label: 'כיתה' },
+      { id: 'f_child_id', required: true, type: 'id', label: 'תעודת זהות של התלמיד/ה' },
+      { id: 'f_parent_name', required: true, type: 'name', label: 'שם ההורה המלווה' },
+      { id: 'f_parent_id', required: true, type: 'id', label: 'תעודת זהות של ההורה המלווה' },
+      { id: 'f_phone', required: true, type: 'phone', label: 'טלפון נייד' },
+      { id: 'f_phone2', required: false, type: 'phone', label: 'טלפון נוסף' }, // שדה רשות
+      { id: 'f_address', required: false, type: 'text', label: 'כתובת מגורים' } // שדה רשות
+    ];
+
     let ok = true;
-    fields.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el.value.trim()) {
+    let errorMessages = [];
+
+    validationRules.forEach(rule => {
+      const el = document.getElementById(rule.id);
+      if (!el) return;
+      
+      const val = el.value.trim();
+      let isValid = true;
+
+      // אם זה שדה חובה והוא ריק
+      if (rule.required && !val) {
+        isValid = false;
+        errorMessages.push(`${rule.label}: שדה חובה`);
+      } else if (val) {
+        // אם יש תוכן לשדה, מבצעים ולידציה לפי הסוג
+        if (rule.type === 'name' && val.length < 2) {
+          isValid = false;
+          errorMessages.push(`${rule.label}: יש להזין שם חוקי`);
+        } else if (rule.type === 'id' && !isValidIsraeliID(val)) {
+          isValid = false;
+          errorMessages.push(`${rule.label}: תעודת זהות אינה תקינה`);
+        } else if (rule.type === 'phone' && !isValidIsraeliPhone(val)) {
+          isValid = false;
+          errorMessages.push(`${rule.label}: מספר לא תקין (יש להזין 10 ספרות המתחילות ב-05)`);
+        }
+      }
+
+      // טיפול צבעי שגיאה בשדה
+      if (!isValid) {
         el.classList.add('error');
         ok = false;
       } else {
         el.classList.remove('error');
       }
     });
+
     const err = document.getElementById('detailsError');
-    if (!ok) { err.classList.add('show'); return; }
+    if (!ok) {
+      err.innerHTML = "⚠️<br>" + errorMessages.join('<br>');
+      err.classList.add('show');
+      return;
+    }
     err.classList.remove('show');
     goTo(4);
   }
