@@ -47,6 +47,11 @@ function doPost(e) {
       logMsg(runId, "sheet created");
     }
 
+    // כפיית פורמט טקסט על עמודות ת.ז וטלפון כדי שלא תיחתך ה-0 המובילה
+    ["E", "G", "I", "J"].forEach(function(col) {
+      sheet.getRange(col + ":" + col).setNumberFormat("@");
+    });
+
     const data = JSON.parse(e.postData.contents || "{}");
     logMsg(runId, "payload keys: " + Object.keys(data || {}).join(","));
 
